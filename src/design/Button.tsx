@@ -56,6 +56,7 @@ interface IProp  {
 	size: "default" | "large" | "small";
 	color: "primary" | "danger" | "default";
 	children: any;
+	onClick?: () => void;
 }
 
 export default function Button(param: IProp) {
@@ -65,6 +66,7 @@ export default function Button(param: IProp) {
 const button = ({ size, color }: IProp) => css`
 	border: none;
 	border-radius: 4px;
+	line-height: 1;
 	${buttonSizes[size]}
 	${buttonColors[color]}
 	&:disabled {
