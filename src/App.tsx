@@ -1,9 +1,17 @@
+import React from 'react'
 import { css } from '@emotion/react'
 import './App.css';
+import Routers from './Routers';
+import { Header, Body } from './design/Layout'
 
 function App() {
   return (
-    <div css={test}>testtt</div>
+    <>
+      <Header>eee</Header>
+      <Body>
+        <Routers />
+      </Body>
+    </>
   );
 }
 
