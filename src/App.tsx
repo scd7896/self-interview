@@ -7,7 +7,9 @@ import { Header, Body } from "./design/Layout";
 function App() {
   return (
     <>
-      <Header>eee</Header>
+      <Header>
+        <h2>Self-Interview (면접 혼자 연습하기)</h2>
+      </Header>
       <Body>
         <Routers />
       </Body>

@@ -11,14 +11,16 @@ export default function HomePage() {
 
   const onEnter = useCallback(() => {
     navigate(`/interview?position=${position}`);
-  }, [navigate]);
+  }, [navigate, position]);
 
   return (
     <div>
       <h2>당신의 직군은 무엇입니까?</h2>
       <Select onChange={(e) => setPosition(e.target.value)}>
         {keys.map((key) => (
-          <option value={key}>{key}</option>
+          <option value={key} key={key}>
+            {key}
+          </option>
         ))}
       </Select>
       {position && (
