@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import * as datas from "../../../data";
 import { Position, Difficulty, DiffcultyKeys } from "../../../data/index.d";
+
 const questions: Record<string, Position> = datas;
 
 export default function useQuestion() {
+  const [questionIndex, setQuestionIndex] = useState<number>();
   const [selectedQuestion, setSelectedQuestion] = useState<string[]>();
   const [searchParams] = useSearchParams();
   const position = searchParams.get("position");
@@ -21,16 +23,16 @@ export default function useQuestion() {
         return Math.floor(Math.random() * maxIndex);
       }
 
-      while (true) {
-        if (questionIndexArr.length >= length) {
-          return questionIndexArr;
-        }
+      while (questionIndexArr.length < length) {
+        if (questionIndexArr.length >= length) break;
+
         const index = getRandomInt();
         const result = questionIndexArr.findIndex((questionIndex) => index === questionIndex);
         if (result === -1) {
           questionIndexArr.push(index);
         }
       }
+      return questionIndexArr;
     };
 
     return diffcultyKeys.reduce<string[]>((acc, key) => {
@@ -55,16 +57,15 @@ export default function useQuestion() {
 
       const result = [...realGameResult, ...theoryResult];
       setSelectedQuestion(result);
+      setQuestionIndex(undefined);
     }
   }, [positionQuestion, selectedQuestionPick]);
-
-  useEffect(() => {
-    console.log(selectedQuestion);
-  }, [selectedQuestion]);
 
   return {
     positionQuestion,
     randomPickQuestion,
     selectedQuestion,
+    questionIndex,
+    setQuestionIndex,
   };
 }
