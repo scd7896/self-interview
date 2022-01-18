@@ -7,12 +7,24 @@ import useVideoInterview from "./hooks/useVideoInterview";
 
 export default function InterviewPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording } = useVideoInterview();
-  const { positionQuestion, randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion } = useQuestion();
+  const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording, stopVideoStream } =
+    useVideoInterview();
+  const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
 
   const onNextButtonClick = useCallback(() => {
     setQuestionIndex((prev) => (prev === undefined ? 0 : prev + 1));
   }, [setQuestionIndex]);
+
+  const onStopButtonClick = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+
+      videoRef.current.src = "";
+    }
+
+    stopVideoStream();
+    resetQuestion();
+  }, [stopVideoStream, resetQuestion]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -29,14 +41,14 @@ export default function InterviewPage() {
   }, [videoStream]);
 
   return (
-    <div>
+    <div css={wrapper}>
       <section css={videoWrapper}>
         {selectedQuestion && questionIndex !== undefined && (
           <div css={questionWrapper}>{selectedQuestion[questionIndex]}</div>
         )}
         <video ref={videoRef} muted></video>
       </section>
-      <section>
+      <nav css={navWrapper}>
         {!videoStream && (
           <Button size="default" color="primary" onClick={initialVideoStream} disabled={videoStream !== undefined}>
             화면 ON
@@ -44,31 +56,41 @@ export default function InterviewPage() {
         )}
         {videoStream && (
           <>
-            <Button size="default" color="primary" onClick={recording ? stopRecording : recodingVideo}>
+            <div>
+              <Button size="default" color="danger" onClick={onStopButtonClick}>
+                중지
+              </Button>
+              {!selectedQuestion && (
+                <Button size="default" color="primary" css={marginLeft} onClick={randomPickQuestion}>
+                  문제 뽑기
+                </Button>
+              )}
+              {selectedQuestion && (
+                <Button
+                  css={marginLeft}
+                  size="default"
+                  color="primary"
+                  disabled={questionIndex === selectedQuestion?.length}
+                  onClick={onNextButtonClick}
+                >
+                  {questionIndex === undefined ? "시작하기" : "다음"}
+                </Button>
+              )}
+            </div>
+            <Button css={marginLeft} size="default" color="primary" onClick={recording ? stopRecording : recodingVideo}>
               {recording ? "녹화 종료" : "녹화 시작"}
-            </Button>
-            <Button size="default" color="primary" style={{ marginLeft: "8px" }} onClick={randomPickQuestion}>
-              문제 뽑기
             </Button>
           </>
         )}
-        {positionQuestion && (
-          <Button
-            size="default"
-            color="primary"
-            disabled={questionIndex === selectedQuestion?.length}
-            onClick={onNextButtonClick}
-          >
-            {questionIndex === undefined ? "시작하기" : "다음"}
-          </Button>
-        )}
-      </section>
+      </nav>
     </div>
   );
 }
 
 const videoWrapper = css`
+  text-align: center;
   position: relative;
+  background-color: ${colors.netural[200]};
 `;
 
 const questionWrapper = css`
@@ -79,4 +101,18 @@ const questionWrapper = css`
   top: 0;
   background: rgba(0, 0, 0, 0.5);
   color: ${colors.netural[100]};
+`;
+
+const wrapper = css`
+  padding-bottom: 24px;
+`;
+
+const navWrapper = css`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+`;
+
+const marginLeft = css`
+  margin-left: 8px;
 `;

@@ -39,9 +39,20 @@ export default function useVideoInterview() {
     rec.start(1000);
   }, [videoStream]);
 
-  async function stopRecording() {
+  const stopRecording = useCallback(() => {
     if (recording) recording.stop();
-  }
+  }, [recording]);
+
+  const stopVideoStream = useCallback(() => {
+    if (recording) recording.stop();
+    if (videoStream) {
+      const tracks = videoStream.getTracks();
+      tracks.map((track) => track.stop());
+    }
+    setVideoStream(undefined);
+    setRecording(undefined);
+    setRecordStartTime(undefined);
+  }, [videoStream, recording]);
 
   return {
     videoStream,
@@ -50,5 +61,6 @@ export default function useVideoInterview() {
     recording,
     stopRecording,
     recordStartTime,
+    stopVideoStream,
   };
 }

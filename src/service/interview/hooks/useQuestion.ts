@@ -61,11 +61,17 @@ export default function useQuestion() {
     }
   }, [positionQuestion, selectedQuestionPick]);
 
+  const resetQuestion = useCallback(() => {
+    setSelectedQuestion(undefined);
+    setQuestionIndex(undefined);
+  }, []);
+
   return {
     positionQuestion,
     randomPickQuestion,
     selectedQuestion,
     questionIndex,
     setQuestionIndex,
+    resetQuestion,
   };
 }
