@@ -7,6 +7,8 @@ import useVideoInterview from "./hooks/useVideoInterview";
 
 export default function InterviewPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
+
   const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording, stopVideoStream } =
     useVideoInterview();
   const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
@@ -26,6 +28,15 @@ export default function InterviewPage() {
     resetQuestion();
   }, [stopVideoStream, resetQuestion]);
 
+  const videoOnairClickListener = useCallback(() => {
+    if (videoRef.current) {
+      const width = videoRef.current.clientWidth;
+      const height = videoRef.current.clientHeight;
+
+      initialVideoStream({ width, height });
+    }
+  }, [initialVideoStream]);
+
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.onloadedmetadata = function () {
@@ -42,15 +53,15 @@ export default function InterviewPage() {
 
   return (
     <div css={wrapper}>
-      <section css={videoWrapper}>
+      <section css={videoWrapper} ref={videoWrapperRef}>
         {selectedQuestion && questionIndex !== undefined && (
           <div css={questionWrapper}>{selectedQuestion[questionIndex]}</div>
         )}
-        <video ref={videoRef} muted></video>
+        <video css={outputVideo} ref={videoRef} muted></video>
       </section>
       <nav css={navWrapper}>
         {!videoStream && (
-          <Button size="default" color="primary" onClick={initialVideoStream} disabled={videoStream !== undefined}>
+          <Button size="default" color="primary" onClick={videoOnairClickListener} disabled={videoStream !== undefined}>
             화면 ON
           </Button>
         )}
@@ -88,6 +99,9 @@ export default function InterviewPage() {
 }
 
 const videoWrapper = css`
+  width: 100%;
+  height: 0;
+  padding-bottom: 50%;
   text-align: center;
   position: relative;
   background-color: ${colors.netural[200]};
@@ -95,10 +109,11 @@ const videoWrapper = css`
 
 const questionWrapper = css`
   width: 100%;
-  padding: 24px;
+  padding: 24px 0px;
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 1;
   background: rgba(0, 0, 0, 0.5);
   color: ${colors.netural[100]};
 `;
@@ -115,4 +130,13 @@ const navWrapper = css`
 
 const marginLeft = css`
   margin-left: 8px;
+`;
+
+const outputVideo = css`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1);
 `;

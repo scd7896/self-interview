@@ -5,11 +5,14 @@ export default function useVideoInterview() {
   const [recording, setRecording] = useState<any>();
   const [recordStartTime, setRecordStartTime] = useState<Date>();
 
-  const initialVideoStream = useCallback(async () => {
-    if (videoStream) return;
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { width: 640, height: 480 } });
-    setVideoStream(stream);
-  }, [videoStream]);
+  const initialVideoStream = useCallback(
+    async (mediaTrackConstraints?: MediaTrackConstraints) => {
+      if (videoStream) return;
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: mediaTrackConstraints });
+      setVideoStream(stream);
+    },
+    [videoStream],
+  );
 
   const recodingVideo = useCallback(async () => {
     if (!videoStream) return;
