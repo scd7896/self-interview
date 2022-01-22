@@ -39,7 +39,7 @@ export default function useVideoInterview() {
       createWritable.close();
       setRecording(undefined);
     };
-    rec.start(1000);
+    rec.start(10);
   }, [videoStream]);
 
   const stopRecording = useCallback(() => {

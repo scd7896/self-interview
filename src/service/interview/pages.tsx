@@ -58,11 +58,12 @@ export default function InterviewPage() {
           <div css={questionWrapper}>{selectedQuestion[questionIndex]}</div>
         )}
         <video css={outputVideo} ref={videoRef} muted></video>
+        {recording && <div css={recordingMark}> </div>}
       </section>
       <nav css={navWrapper}>
         {!videoStream && (
           <Button size="default" color="primary" onClick={videoOnairClickListener} disabled={videoStream !== undefined}>
-            화면 ON
+            시작하기
           </Button>
         )}
         {videoStream && (
@@ -139,4 +140,14 @@ const outputVideo = css`
   width: 100%;
   height: 100%;
   transform: scaleX(-1);
+`;
+
+const recordingMark = css`
+  width: 48px;
+  height: 48px;
+  background: ${colors.danger[700]};
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  border-radius: 100%;
 `;
