@@ -4,18 +4,34 @@ import { Button } from "../../design";
 import colors from "../../design/color";
 import useQuestion from "./hooks/useQuestion";
 import useVideoInterview from "./hooks/useVideoInterview";
+import useVtt from "./hooks/useVtt";
 
 export default function InterviewPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
 
-  const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording, stopVideoStream } =
+  const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording, stopVideoStream, getTimeElapsed } =
     useVideoInterview();
   const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
 
+  const { resetFile, startWriteContent, finishWriteContent, download } = useVtt();
+
   const onNextButtonClick = useCallback(() => {
-    setQuestionIndex((prev) => (prev === undefined ? 0 : prev + 1));
-  }, [setQuestionIndex]);
+    setQuestionIndex((prev) => {
+      const diffString = getTimeElapsed();
+      if (prev === undefined) {
+        if (diffString && selectedQuestion) startWriteContent(diffString, selectedQuestion[0]);
+        return 0;
+      }
+
+      if (diffString && selectedQuestion) {
+        finishWriteContent(diffString);
+        startWriteContent(diffString, selectedQuestion[prev + 1]);
+      }
+
+      return prev + 1;
+    });
+  }, [setQuestionIndex, getTimeElapsed, selectedQuestion, finishWriteContent, startWriteContent]);
 
   const onStopButtonClick = useCallback(() => {
     if (videoRef.current) {
@@ -26,7 +42,8 @@ export default function InterviewPage() {
 
     stopVideoStream();
     resetQuestion();
-  }, [stopVideoStream, resetQuestion]);
+    download();
+  }, [stopVideoStream, resetQuestion, download]);
 
   const videoOnairClickListener = useCallback(() => {
     if (videoRef.current) {

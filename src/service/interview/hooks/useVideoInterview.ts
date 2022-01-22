@@ -42,6 +42,25 @@ export default function useVideoInterview() {
     rec.start(10);
   }, [videoStream]);
 
+  const getTimeElapsed = useCallback(() => {
+    if (!recordStartTime) return null;
+    const nowDate = new Date();
+    let diffMSec = nowDate.getTime() - recordStartTime.getTime();
+    const hour = 1000 * 60 * 60;
+    const elapsedHour = Math.floor(diffMSec / hour);
+    diffMSec %= hour;
+
+    const minutes = 1000 * 60;
+    const elapsedMinutes = Math.floor(diffMSec / minutes);
+    diffMSec %= minutes;
+
+    const seconds = 1000;
+    const elapsedSeconds = Math.floor(diffMSec / seconds);
+    diffMSec %= seconds;
+
+    return [elapsedHour, elapsedMinutes, elapsedSeconds, diffMSec].join(":");
+  }, [recordStartTime]);
+
   const stopRecording = useCallback(() => {
     if (recording) recording.stop();
   }, [recording]);
@@ -65,5 +84,6 @@ export default function useVideoInterview() {
     stopRecording,
     recordStartTime,
     stopVideoStream,
+    getTimeElapsed,
   };
 }
