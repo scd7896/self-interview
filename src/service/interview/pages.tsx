@@ -1,37 +1,42 @@
 import { css } from "@emotion/react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Button } from "../../design";
 import colors from "../../design/color";
 import useQuestion from "./hooks/useQuestion";
 import useVideoInterview from "./hooks/useVideoInterview";
-import useVtt from "./hooks/useVtt";
+import VTT from "./model/VTT";
 
 export default function InterviewPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
+  const VTTInstance = useMemo(() => new VTT(), []);
 
   const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording, stopVideoStream, getTimeElapsed } =
     useVideoInterview();
   const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
 
-  const { startWriteContent, finishWriteContent, download } = useVtt();
-
   const onNextButtonClick = useCallback(() => {
-    setQuestionIndex((prev) => {
-      const diffString = getTimeElapsed();
-      if (prev === undefined) {
-        if (diffString && selectedQuestion) startWriteContent(diffString, selectedQuestion[0]);
-        return 0;
-      }
+    const diffString = getTimeElapsed();
 
+    if (questionIndex === undefined) {
       if (diffString && selectedQuestion) {
-        finishWriteContent(diffString);
-        startWriteContent(diffString, selectedQuestion[prev + 1]);
+        VTTInstance.startCheckTimerContentTmpSave(diffString, selectedQuestion[0]);
       }
+    } else {
+      if (diffString && selectedQuestion) {
+        VTTInstance.finishCheckTimer(diffString);
+        if (questionIndex + 1 < selectedQuestion.length) {
+          VTTInstance.startCheckTimerContentTmpSave(diffString, selectedQuestion[questionIndex + 1]);
+        }
+      }
+    }
+
+    setQuestionIndex((prev) => {
+      if (prev === undefined) return 0;
 
       return prev + 1;
     });
-  }, [setQuestionIndex, getTimeElapsed, selectedQuestion, finishWriteContent, startWriteContent]);
+  }, [setQuestionIndex, getTimeElapsed, selectedQuestion, VTTInstance, questionIndex]);
 
   const onStopButtonClick = useCallback(() => {
     if (videoRef.current) {
@@ -43,8 +48,8 @@ export default function InterviewPage() {
     stopVideoStream();
     resetQuestion();
     const filename = window.prompt("질문의 내용을 다운로드 받으시겠습니까?");
-    if (filename) download(filename);
-  }, [stopVideoStream, resetQuestion, download]);
+    if (filename) VTTInstance.download(filename);
+  }, [stopVideoStream, resetQuestion, VTTInstance]);
 
   const videoOnairClickListener = useCallback(async () => {
     if (videoRef.current) {
