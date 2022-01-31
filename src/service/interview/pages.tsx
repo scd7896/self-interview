@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef } from "react";
 import { Button } from "../../design";
 import colors from "../../design/color";
 import useQuestion from "./hooks/useQuestion";
-import useSpeechRecognition from "./hooks/useSpeechRecognition";
 import useVideoInterview from "./hooks/useVideoInterview";
 import useVtt from "./hooks/useVtt";
 
@@ -16,7 +15,6 @@ export default function InterviewPage() {
   const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
 
   const { startWriteContent, finishWriteContent, download } = useVtt();
-  const { startSpeech, endSpeech } = useSpeechRecognition();
 
   const onNextButtonClick = useCallback(() => {
     setQuestionIndex((prev) => {
@@ -44,17 +42,23 @@ export default function InterviewPage() {
 
     stopVideoStream();
     resetQuestion();
-    download();
+    const filename = window.prompt("질문의 내용을 다운로드 받으시겠습니까?");
+    if (filename) download(filename);
   }, [stopVideoStream, resetQuestion, download]);
 
-  const videoOnairClickListener = useCallback(() => {
+  const videoOnairClickListener = useCallback(async () => {
     if (videoRef.current) {
       const width = videoRef.current.clientWidth;
       const height = videoRef.current.clientHeight;
 
-      initialVideoStream({ width, height });
+      await initialVideoStream({ width, height });
     }
   }, [initialVideoStream]);
+
+  const questionPickAndRecordingStart = useCallback(() => {
+    randomPickQuestion();
+    recodingVideo();
+  }, [randomPickQuestion, recodingVideo]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -82,7 +86,7 @@ export default function InterviewPage() {
       <nav css={navWrapper}>
         {!videoStream && (
           <Button size="default" color="primary" onClick={videoOnairClickListener} disabled={videoStream !== undefined}>
-            시작하기
+            녹화 시작
           </Button>
         )}
         {videoStream && (
@@ -92,7 +96,7 @@ export default function InterviewPage() {
                 중지
               </Button>
               {!selectedQuestion && (
-                <Button size="default" color="primary" css={marginLeft} onClick={randomPickQuestion}>
+                <Button size="default" color="primary" css={marginLeft} onClick={questionPickAndRecordingStart}>
                   문제 뽑기
                 </Button>
               )}
@@ -104,7 +108,7 @@ export default function InterviewPage() {
                   disabled={questionIndex === selectedQuestion?.length}
                   onClick={onNextButtonClick}
                 >
-                  {questionIndex === undefined ? "시작하기" : "다음"}
+                  {questionIndex === undefined ? "SelfInterview 시작" : "다음"}
                 </Button>
               )}
             </div>
@@ -114,12 +118,6 @@ export default function InterviewPage() {
           </>
         )}
       </nav>
-      <Button size="default" color="primary" onClick={startSpeech}>
-        test스피치
-      </Button>
-      <Button size="default" color="primary" onClick={endSpeech}>
-        endSpeech
-      </Button>
     </div>
   );
 }
@@ -168,8 +166,8 @@ const outputVideo = css`
 `;
 
 const recordingMark = css`
-  width: 48px;
-  height: 48px;
+  width: 24px;
+  height: 24px;
   background: ${colors.danger[700]};
   position: absolute;
   bottom: 24px;
