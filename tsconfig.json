@@ -20,7 +20,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "typeRoots": ["./src/types/index.d.ts"]
   },
   "include": [
     "src"

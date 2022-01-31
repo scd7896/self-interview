@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { Button } from "../../design";
 import colors from "../../design/color";
 import useQuestion from "./hooks/useQuestion";
+import useSpeechRecognition from "./hooks/useSpeechRecognition";
 import useVideoInterview from "./hooks/useVideoInterview";
 import useVtt from "./hooks/useVtt";
 
@@ -14,7 +15,8 @@ export default function InterviewPage() {
     useVideoInterview();
   const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
 
-  const { resetFile, startWriteContent, finishWriteContent, download } = useVtt();
+  const { startWriteContent, finishWriteContent, download } = useVtt();
+  const { startSpeech, endSpeech } = useSpeechRecognition();
 
   const onNextButtonClick = useCallback(() => {
     setQuestionIndex((prev) => {
@@ -112,6 +114,12 @@ export default function InterviewPage() {
           </>
         )}
       </nav>
+      <Button size="default" color="primary" onClick={startSpeech}>
+        test스피치
+      </Button>
+      <Button size="default" color="primary" onClick={endSpeech}>
+        endSpeech
+      </Button>
     </div>
   );
 }
