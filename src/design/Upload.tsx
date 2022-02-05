@@ -8,33 +8,51 @@ interface IFileDescription {
   name: string;
 }
 
-export default function Upload() {
+interface IProp {
+  multiple?: boolean;
+}
+
+export default function Upload({ multiple }: IProp) {
   const uploadWrapperRef = useRef<HTMLDivElement>(null);
   const [fileDescriptions, setFileDescriptions] = useState<IFileDescription[]>([]);
-  const fileUploadEventListener = useCallback((e) => {
-    e.preventDefault();
-    const input = document.createElement("input");
-    input.type = "file";
-    input.style.display = "none";
-    input.name = "file";
-    input.addEventListener("change", (e: any) => {
-      if (e.target.files?.length) {
-        const file = e.target.files[0];
-        const url = URL.createObjectURL(file);
-        setFileDescriptions((prev) => [
-          ...prev,
-          {
-            url,
-            name: file.name,
-          },
-        ]);
-        uploadWrapperRef.current?.appendChild(input);
-      } else {
-        input.remove();
-      }
-    });
-    input.click();
-  }, []);
+  const [fileDescription, setFileDescription] = useState<IFileDescription>();
+  const fileUploadEventListener = useCallback(
+    (e) => {
+      e.preventDefault();
+      const input = document.createElement("input");
+      input.type = "file";
+      input.style.display = "none";
+      input.name = "file";
+      input.addEventListener("change", (e: any) => {
+        if (e.target.files?.length) {
+          const file = e.target.files[0];
+          const url = URL.createObjectURL(file);
+          if (multiple) {
+            setFileDescriptions((prev) => [
+              ...prev,
+              {
+                url,
+                name: file.name,
+              },
+            ]);
+            uploadWrapperRef.current?.appendChild(input);
+          } else {
+            const prevInput = uploadWrapperRef.current?.querySelector("input");
+            prevInput && uploadWrapperRef.current?.removeChild(prevInput);
+            uploadWrapperRef.current?.appendChild(input);
+            setFileDescription({
+              url,
+              name: file.name,
+            });
+          }
+        } else {
+          input.remove();
+        }
+      });
+      input.click();
+    },
+    [multiple],
+  );
 
   return (
     <div ref={uploadWrapperRef}>
@@ -47,6 +65,11 @@ export default function Upload() {
             {name}
           </a>
         ))}
+        {fileDescription && (
+          <a rel="noreferrer" href={fileDescription.url} css={anchor} target="_blank">
+            {fileDescription.name}
+          </a>
+        )}
       </section>
     </div>
   );
