@@ -56,7 +56,6 @@ interface IProp extends React.ButtonHTMLAttributes<any> {
   size: "default" | "large" | "small";
   color: "primary" | "danger" | "default";
   children: any;
-  onClick?: () => void;
 }
 
 export default function Button(param: IProp) {
