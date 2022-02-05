@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { useCallback, useRef, useState } from "react";
 import Button from "./Button";
-import { onSubmit } from "web-form-helper";
 
 interface IFileDescription {
   url: string;
