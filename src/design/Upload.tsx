@@ -40,9 +40,12 @@ export default function Upload({ multiple }: IProp) {
             const prevInput = uploadWrapperRef.current?.querySelector("input");
             prevInput && uploadWrapperRef.current?.removeChild(prevInput);
             uploadWrapperRef.current?.appendChild(input);
-            setFileDescription({
-              url,
-              name: file.name,
+            setFileDescription((prev) => {
+              prev?.url && URL.revokeObjectURL(prev.url);
+              return {
+                url,
+                name: file.name,
+              };
             });
           }
         } else {
