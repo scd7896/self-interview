@@ -4,14 +4,14 @@ import Button from "./Button";
 
 interface IFileDescription {
   url: string;
-  name: string;
+  fileName: string;
 }
 
-interface IProp {
+interface IProp extends React.InputHTMLAttributes<any> {
   multiple?: boolean;
 }
 
-export default function Upload({ multiple }: IProp) {
+export default function Upload({ multiple, name, accept }: IProp) {
   const uploadWrapperRef = useRef<HTMLDivElement>(null);
   const [fileDescriptions, setFileDescriptions] = useState<IFileDescription[]>([]);
   const [fileDescription, setFileDescription] = useState<IFileDescription>();
@@ -21,7 +21,8 @@ export default function Upload({ multiple }: IProp) {
       const input = document.createElement("input");
       input.type = "file";
       input.style.display = "none";
-      input.name = "file";
+      input.name = name || "file";
+      if (accept) input.accept = accept;
       input.addEventListener("change", (e: any) => {
         if (e.target.files?.length) {
           const file = e.target.files[0];
@@ -31,7 +32,7 @@ export default function Upload({ multiple }: IProp) {
               ...prev,
               {
                 url,
-                name: file.name,
+                fileName: file.name,
               },
             ]);
             uploadWrapperRef.current?.appendChild(input);
@@ -39,11 +40,12 @@ export default function Upload({ multiple }: IProp) {
             const prevInput = uploadWrapperRef.current?.querySelector("input");
             prevInput && uploadWrapperRef.current?.removeChild(prevInput);
             uploadWrapperRef.current?.appendChild(input);
+
             setFileDescription((prev) => {
               prev?.url && URL.revokeObjectURL(prev.url);
               return {
                 url,
-                name: file.name,
+                fileName: file.name,
               };
             });
           }
@@ -53,7 +55,7 @@ export default function Upload({ multiple }: IProp) {
       });
       input.click();
     },
-    [multiple],
+    [multiple, accept, name],
   );
 
   return (
@@ -62,15 +64,21 @@ export default function Upload({ multiple }: IProp) {
         fileUpload
       </Button>
       <section>
-        {fileDescriptions?.map(({ url, name }) => (
-          <a rel="noreferrer" key={url} href={url} css={anchor} target="_blank">
-            {name}
-          </a>
+        {fileDescriptions?.map(({ url, fileName }) => (
+          <>
+            <a rel="noreferrer" key={url} href={url} css={anchor} target="_blank">
+              {fileName}
+            </a>
+            <input type="hidden" name={`${name || "file"}_url`} value={url} />
+          </>
         ))}
         {fileDescription && (
-          <a rel="noreferrer" href={fileDescription.url} css={anchor} target="_blank">
-            {fileDescription.name}
-          </a>
+          <>
+            <a rel="noreferrer" href={fileDescription.url} css={anchor} target="_blank">
+              {fileDescription.fileName}
+            </a>
+            <input type="hidden" name={`${name || "file"}_url`} value={fileDescription.url} />
+          </>
         )}
       </section>
     </div>

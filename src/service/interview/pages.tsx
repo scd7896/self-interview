@@ -44,12 +44,12 @@ export default function InterviewPage() {
 
       videoRef.current.src = "";
     }
-
+    stopRecording();
     stopVideoStream();
     resetQuestion();
     const filename = window.prompt("질문의 내용을 다운로드 받으시겠습니까?");
     if (filename) VTTInstance.download(filename);
-  }, [stopVideoStream, resetQuestion, VTTInstance]);
+  }, [stopVideoStream, resetQuestion, VTTInstance, stopRecording]);
 
   const videoOnairClickListener = useCallback(async () => {
     if (videoRef.current) {
@@ -97,9 +97,6 @@ export default function InterviewPage() {
         {videoStream && (
           <>
             <div>
-              <Button size="default" color="danger" onClick={onStopButtonClick}>
-                중지
-              </Button>
               {!selectedQuestion && (
                 <Button size="default" color="primary" css={marginLeft} onClick={questionPickAndRecordingStart}>
                   문제 뽑기
@@ -117,8 +114,8 @@ export default function InterviewPage() {
                 </Button>
               )}
             </div>
-            <Button css={marginLeft} size="default" color="primary" onClick={recording ? stopRecording : recodingVideo}>
-              {recording ? "녹화 종료" : "녹화 시작"}
+            <Button size="default" color="danger" onClick={onStopButtonClick}>
+              중지
             </Button>
           </>
         )}

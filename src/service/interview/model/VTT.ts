@@ -19,7 +19,7 @@ class VTT {
 
   finishCheckTimer(endTime: string) {
     if (this.contentText === undefined) return;
-    this.fileContents += `${endTime}\n ${this.contentText}\n\n`;
+    this.fileContents += `${endTime} line:80%\n ${this.contentText}\n\n`;
 
     this.contentText = undefined;
   }

@@ -1,10 +1,66 @@
 import { Upload } from "../../design";
+import { IFailValidateReturnType, onSubmit } from "web-form-helper";
+import useReview from "./hooks/useReview";
+import ReviewPlayer from "./components/ReviewPlayer";
+import { useCallback } from "react";
+import { css } from "@emotion/react";
 
 export default function ReviewPage() {
+  const { setVttAndVideo, videoUrl, vttFileUrl } = useReview();
+
+  const uploadSubmitListener = useCallback(
+    ({ vtt, vtt_url, video, video_url }: any) => {
+      setVttAndVideo({
+        video,
+        videoUrl: video_url,
+        vtt,
+        vttUrl: vtt_url,
+      });
+    },
+    [setVttAndVideo],
+  );
+
+  const validate = useCallback(({ video }: any) => {
+    if (!video)
+      return {
+        name: "video",
+        message: "video를 반드시 입력해주세요",
+      };
+    return undefined;
+  }, []);
+
+  const invalidListener = useCallback((_: any, param?: IFailValidateReturnType | string) => {
+    if (typeof param !== "string") {
+      alert(param?.name);
+    }
+  }, []);
+
   return (
     <div>
       리뷰테스트
-      <Upload />
+      {!videoUrl && (
+        <form
+          onSubmit={onSubmit(uploadSubmitListener, {
+            validate,
+            onInvalid: invalidListener,
+          })}
+        >
+          <section>
+            <h2>webm 파일을 업로드해주세요</h2>
+            <Upload name="video" accept=".webm" />
+          </section>
+          <section>
+            <h2>vtt 파일을 업로드해주세요</h2>
+            <Upload name="vtt" accept=".vtt" />
+          </section>
+          <button type="submit">입력완료</button>
+        </form>
+      )}
+      <section css={playerWrapper}>{videoUrl && <ReviewPlayer videoUrl={videoUrl} vttUrl={vttFileUrl} />}</section>
     </div>
   );
 }
+
+const playerWrapper = css`
+  width: 50%;
+`;
