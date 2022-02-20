@@ -29,10 +29,8 @@ export default function ReviewPage() {
     return undefined;
   }, []);
 
-  const invalidListener = useCallback((_: any, param?: IFailValidateReturnType | string) => {
-    if (typeof param !== "string") {
-      alert(param?.name);
-    }
+  const invalidListener = useCallback((_: any, param?: IFailValidateReturnType) => {
+    alert(param?.name);
   }, []);
 
   return (
