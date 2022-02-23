@@ -11,23 +11,21 @@ export default function InterviewPage() {
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const VTTInstance = useMemo(() => new VTT(), []);
 
-  const { initialVideoStream, videoStream, recodingVideo, recording, stopRecording, stopVideoStream, getTimeElapsed } =
+  const { initialVideoStream, videoStream, recodingVideo, recording, stopVideoStream, getTimeElapsed } =
     useVideoInterview();
   const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
 
   const onNextButtonClick = useCallback(() => {
     const diffString = getTimeElapsed();
 
+    if (diffString === null || selectedQuestion === undefined) return setQuestionIndex(0);
+
     if (questionIndex === undefined) {
-      if (diffString && selectedQuestion) {
-        VTTInstance.startCheckTimerContentTmpSave(diffString, selectedQuestion[0]);
-      }
+      VTTInstance.startCheckTimerContentTmpSave(diffString, selectedQuestion[0]);
     } else {
-      if (diffString && selectedQuestion) {
-        VTTInstance.finishCheckTimer(diffString);
-        if (questionIndex + 1 < selectedQuestion.length) {
-          VTTInstance.startCheckTimerContentTmpSave(diffString, selectedQuestion[questionIndex + 1]);
-        }
+      VTTInstance.finishCheckTimer(diffString);
+      if (questionIndex + 1 < selectedQuestion.length) {
+        VTTInstance.startCheckTimerContentTmpSave(diffString, selectedQuestion[questionIndex + 1]);
       }
     }
 
@@ -44,12 +42,11 @@ export default function InterviewPage() {
 
       videoRef.current.src = "";
     }
-    stopRecording();
-    stopVideoStream();
     resetQuestion();
+    stopVideoStream();
     const filename = window.prompt("질문의 내용을 다운로드 받으시겠습니까?");
     if (filename) VTTInstance.download(filename);
-  }, [stopVideoStream, resetQuestion, VTTInstance, stopRecording]);
+  }, [resetQuestion, VTTInstance, stopVideoStream]);
 
   const videoOnairClickListener = useCallback(async () => {
     if (videoRef.current) {
@@ -102,15 +99,14 @@ export default function InterviewPage() {
                   문제 뽑기
                 </Button>
               )}
-              {selectedQuestion && (
-                <Button
-                  css={marginLeft}
-                  size="default"
-                  color="primary"
-                  disabled={questionIndex === selectedQuestion?.length}
-                  onClick={onNextButtonClick}
-                >
+              {questionIndex !== selectedQuestion?.length && (
+                <Button css={marginLeft} size="default" color="primary" onClick={onNextButtonClick}>
                   {questionIndex === undefined ? "SelfInterview 시작" : "다음"}
+                </Button>
+              )}
+              {selectedQuestion && questionIndex === selectedQuestion.length && (
+                <Button size="default" color="primary" onClick={onStopButtonClick}>
+                  녹화 종료 및 질문 다운로드
                 </Button>
               )}
             </div>
