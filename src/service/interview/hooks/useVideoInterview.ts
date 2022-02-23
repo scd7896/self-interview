@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { numberToDigitString } from "../../../util/numberToString";
 
 export default function useVideoInterview() {
   const [videoStream, setVideoStream] = useState<MediaStream>();
@@ -58,15 +59,15 @@ export default function useVideoInterview() {
     const elapsedSeconds = Math.floor(diffMSec / seconds);
     diffMSec %= seconds;
 
-    return [elapsedHour, elapsedMinutes, elapsedSeconds, diffMSec].join(":");
+    return `${[
+      numberToDigitString(elapsedHour, 2),
+      numberToDigitString(elapsedMinutes, 2),
+      numberToDigitString(elapsedSeconds, 2),
+    ].join(":")}.${numberToDigitString(diffMSec, 3)}`;
   }, [recordStartTime]);
 
-  const stopRecording = useCallback(() => {
-    if (recording) recording.stop();
-  }, [recording]);
-
   const stopVideoStream = useCallback(() => {
-    if (recording) recording.stop();
+    if (recording) recording?.stop();
     if (videoStream) {
       const tracks = videoStream.getTracks();
       tracks.map((track) => track.stop());
@@ -81,7 +82,6 @@ export default function useVideoInterview() {
     initialVideoStream,
     recodingVideo,
     recording,
-    stopRecording,
     recordStartTime,
     stopVideoStream,
     getTimeElapsed,
