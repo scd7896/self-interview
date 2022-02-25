@@ -19,7 +19,7 @@ class VTT {
 
   finishCheckTimer(endTime: string) {
     if (this.contentText === undefined) return;
-    this.fileContents += `${endTime} line:80%\n ${this.contentText}\n\n`;
+    this.fileContents += `${endTime} \n ${this.contentText}\n\n`;
 
     this.contentText = undefined;
   }
@@ -31,10 +31,11 @@ class VTT {
     const a = document.createElement("a");
     document.body.appendChild(a);
     a.href = url;
+    a.download = `${filename}.vtt`;
     a.click();
     document.body.removeChild(a);
     a.remove();
-    a.download = `${filename}.vtt`;
+
     URL.revokeObjectURL(url);
     this.resetFile();
   }
