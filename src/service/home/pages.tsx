@@ -1,8 +1,10 @@
 import { css } from "@emotion/react";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import * as datas from "../../data/index";
 import { Select, Button } from "../../design";
+import colors from "../../design/color";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -30,6 +32,13 @@ export default function HomePage() {
           </Button>
         </section>
       )}
+      <section css={reviewDescriptionWrapper}>
+        녹화했던 영상을 리뷰하면서{" "}
+        <Link css={link} to="/review">
+          피드백
+        </Link>{" "}
+        하시고 싶으신가요?
+      </section>
     </div>
   );
 }
@@ -38,4 +47,16 @@ const enterButtonWrapper = css`
   width: 100%;
   text-align: center;
   margin-top: 24px;
+`;
+
+const reviewDescriptionWrapper = css`
+  margin-top: 24px;
+  color: ${colors.netural[900]};
+`;
+
+const link = css`
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  color: ${colors.primary[700]};
 `;

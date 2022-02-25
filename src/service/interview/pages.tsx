@@ -4,6 +4,7 @@ import { Button } from "../../design";
 import colors from "../../design/color";
 import useQuestion from "./hooks/useQuestion";
 import useVideoInterview from "./hooks/useVideoInterview";
+import { Link } from "react-router-dom";
 import VTT from "./model/VTT";
 
 export default function InterviewPage() {
@@ -62,6 +63,10 @@ export default function InterviewPage() {
     recodingVideo();
   }, [randomPickQuestion, recodingVideo]);
 
+  const isInterviewEnd = useMemo(() => {
+    return selectedQuestion && questionIndex === selectedQuestion.length;
+  }, [selectedQuestion, questionIndex]);
+
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.onloadedmetadata = function () {
@@ -78,6 +83,9 @@ export default function InterviewPage() {
 
   return (
     <div css={wrapper}>
+      <section>
+        <Link to="/review">녹화영상 리뷰하러가기</Link>
+      </section>
       <section css={videoWrapper} ref={videoWrapperRef}>
         {selectedQuestion && questionIndex !== undefined && (
           <div css={questionWrapper}>{selectedQuestion[questionIndex]}</div>
@@ -104,7 +112,7 @@ export default function InterviewPage() {
                   {questionIndex === undefined ? "SelfInterview 시작" : "다음"}
                 </Button>
               )}
-              {selectedQuestion && questionIndex === selectedQuestion.length && (
+              {isInterviewEnd && (
                 <Button size="default" color="primary" onClick={onStopButtonClick}>
                   녹화 종료 및 질문 다운로드
                 </Button>
