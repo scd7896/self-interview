@@ -66,5 +66,5 @@ const buttonStyle = css`
 `;
 
 const playerWrapper = css`
-  width: 50%;
+  width: 100%;
 `;
