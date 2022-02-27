@@ -2,6 +2,7 @@ import { Upload } from "../../design";
 import { IFailValidateReturnType, onSubmit } from "web-form-helper";
 import useReview from "./hooks/useReview";
 import ReviewPlayer from "./components/ReviewPlayer";
+import { Button } from "../../design";
 import { useCallback } from "react";
 import { css } from "@emotion/react";
 
@@ -35,7 +36,6 @@ export default function ReviewPage() {
 
   return (
     <div>
-      리뷰테스트
       {!videoUrl && (
         <form
           onSubmit={onSubmit(uploadSubmitListener, {
@@ -51,13 +51,19 @@ export default function ReviewPage() {
             <h2>vtt 파일을 업로드해주세요</h2>
             <Upload name="vtt" accept=".vtt" />
           </section>
-          <button type="submit">입력완료</button>
+          <Button css={buttonStyle} type="submit" color="primary" size="large">
+            입력완료
+          </Button>
         </form>
       )}
       <section css={playerWrapper}>{videoUrl && <ReviewPlayer videoUrl={videoUrl} vttUrl={vttFileUrl} />}</section>
     </div>
   );
 }
+
+const buttonStyle = css`
+  margin-top: 16px;
+`;
 
 const playerWrapper = css`
   width: 50%;
