@@ -14,7 +14,8 @@ export default function InterviewPage() {
 
   const { initialVideoStream, videoStream, recodingVideo, recording, stopVideoStream, getTimeElapsed } =
     useVideoInterview();
-  const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion } = useQuestion();
+  const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion, questionDownload } =
+    useQuestion();
 
   const onNextButtonClick = useCallback(() => {
     const diffString = getTimeElapsed();
@@ -83,8 +84,11 @@ export default function InterviewPage() {
 
   return (
     <div css={wrapper}>
-      <section>
+      <section css={headerWrapper}>
         <Link to="/review">녹화영상 리뷰하러가기</Link>
+        <Button size="default" color="primary" onClick={questionDownload}>
+          질문 내용 다운로드
+        </Button>
       </section>
       <section css={videoWrapper} ref={videoWrapperRef}>
         {selectedQuestion && questionIndex !== undefined && (
@@ -179,4 +183,10 @@ const recordingMark = css`
   bottom: 24px;
   right: 24px;
   border-radius: 100%;
+`;
+
+const headerWrapper = css`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
 `;

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import * as datas from "../../../data";
 import { Position, Difficulty, DiffcultyKeys } from "../../../data/index.d";
+import { difficulty } from "../../../util/constant";
 
 const questions: Record<string, Position> = datas;
 
@@ -66,6 +67,35 @@ export default function useQuestion() {
     setQuestionIndex(undefined);
   }, []);
 
+  const getPositionQuestionCsvText = useCallback(() => {
+    let csvText = "";
+    if (positionQuestion) {
+      difficulty.map((difficult) => {
+        positionQuestion.realGame[difficult]?.map((question) => (csvText += `${question.replaceAll(",", `","`)}\n`));
+      });
+      difficulty.map((difficult) => {
+        positionQuestion.theory[difficult]?.map((question) => (csvText += `${question.replaceAll(",", `","`)}\n`));
+      });
+    }
+    return csvText;
+  }, [positionQuestion]);
+
+  const questionDownload = useCallback(() => {
+    if (positionQuestion) {
+      const csvText = getPositionQuestionCsvText();
+      const file = new File([csvText], "question.csv", { type: "text/csv" });
+      const url = URL.createObjectURL(file);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "question.csv";
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } else {
+      throw "선택되어있는 question이 없습니다.";
+    }
+  }, [positionQuestion, getPositionQuestionCsvText]);
+
   return {
     positionQuestion,
     randomPickQuestion,
@@ -73,5 +103,6 @@ export default function useQuestion() {
     questionIndex,
     setQuestionIndex,
     resetQuestion,
+    questionDownload,
   };
 }
