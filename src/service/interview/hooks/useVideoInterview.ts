@@ -67,7 +67,7 @@ export default function useVideoInterview() {
   }, [recordStartTime]);
 
   const stopVideoStream = useCallback(() => {
-    if (recording) recording?.stop();
+    if (recording) recording.stop();
     if (videoStream) {
       const tracks = videoStream.getTracks();
       tracks.map((track) => track.stop());

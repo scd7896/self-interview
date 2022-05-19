@@ -31,7 +31,7 @@ export default function ReviewPage() {
   }, []);
 
   const invalidListener = useCallback((_: any, param?: IFailValidateReturnType) => {
-    alert(param?.name);
+    alert(param ? param.name : "");
   }, []);
 
   return (

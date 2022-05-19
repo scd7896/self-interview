@@ -71,7 +71,7 @@ export default function InterviewPage() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.onloadedmetadata = function () {
-        videoRef.current?.play();
+        if (videoRef.current) videoRef.current.play();
       };
     }
   }, []);
@@ -111,7 +111,7 @@ export default function InterviewPage() {
                   문제 뽑기
                 </Button>
               )}
-              {questionIndex !== selectedQuestion?.length && (
+              {selectedQuestion && questionIndex !== selectedQuestion.length && (
                 <Button css={marginLeft} size="default" color="primary" onClick={onNextButtonClick}>
                   {questionIndex === undefined ? "SelfInterview 시작" : "다음"}
                 </Button>

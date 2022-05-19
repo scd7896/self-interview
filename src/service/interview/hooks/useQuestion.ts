@@ -71,10 +71,14 @@ export default function useQuestion() {
     let csvText = "";
     if (positionQuestion) {
       difficulty.map((difficult) => {
-        positionQuestion.realGame[difficult]?.map((question) => (csvText += `${question.replaceAll(",", `","`)}\n`));
+        const realGameQuestion = positionQuestion.realGame[difficult];
+        if (realGameQuestion) {
+          realGameQuestion.map((question) => (csvText += `${question.replaceAll(",", `","`)}\n`));
+        }
       });
       difficulty.map((difficult) => {
-        positionQuestion.theory[difficult]?.map((question) => (csvText += `${question.replaceAll(",", `","`)}\n`));
+        const theoryQuestion = positionQuestion.theory[difficult];
+        if (theoryQuestion) theoryQuestion.map((question) => (csvText += `${question.replaceAll(",", `","`)}\n`));
       });
     }
     return csvText;

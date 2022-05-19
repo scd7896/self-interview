@@ -24,7 +24,7 @@ export default function Upload({ multiple, name, accept }: IProp) {
       input.name = name || "file";
       if (accept) input.accept = accept;
       input.addEventListener("change", (e: any) => {
-        if (e.target.files?.length) {
+        if (e.target.files && e.target.files.length) {
           const file = e.target.files[0];
           const url = URL.createObjectURL(file);
           if (multiple) {
@@ -35,19 +35,21 @@ export default function Upload({ multiple, name, accept }: IProp) {
                 fileName: file.name,
               },
             ]);
-            uploadWrapperRef.current?.appendChild(input);
+            if (uploadWrapperRef.current) uploadWrapperRef.current.appendChild(input);
           } else {
-            const prevInput = uploadWrapperRef.current?.querySelector("input[type=file]");
-            prevInput?.remove();
-            uploadWrapperRef.current?.appendChild(input);
+            if (uploadWrapperRef.current) {
+              const prevInput = uploadWrapperRef.current.querySelector("input[type=file]") as HTMLInputElement;
+              prevInput.remove();
+              uploadWrapperRef.current.appendChild(input);
 
-            setFileDescription((prev) => {
-              prev?.url && URL.revokeObjectURL(prev.url);
-              return {
-                url,
-                fileName: file.name,
-              };
-            });
+              setFileDescription((prev) => {
+                if (prev && prev.url) URL.revokeObjectURL(prev.url);
+                return {
+                  url,
+                  fileName: file.name,
+                };
+              });
+            }
           }
         } else {
           input.remove();
@@ -64,14 +66,15 @@ export default function Upload({ multiple, name, accept }: IProp) {
         fileUpload
       </Button>
       <section>
-        {fileDescriptions?.map(({ url, fileName }) => (
-          <>
-            <a rel="noreferrer" key={url} href={url} css={anchor} target="_blank">
-              {fileName}
-            </a>
-            <input type="hidden" name={`${name || "file"}_url`} value={url} />
-          </>
-        ))}
+        {fileDescriptions &&
+          fileDescriptions.map(({ url, fileName }) => (
+            <>
+              <a rel="noreferrer" key={url} href={url} css={anchor} target="_blank">
+                {fileName}
+              </a>
+              <input type="hidden" name={`${name || "file"}_url`} value={url} />
+            </>
+          ))}
         {fileDescription && (
           <>
             <a rel="noreferrer" href={fileDescription.url} css={anchor} target="_blank">
