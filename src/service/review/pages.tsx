@@ -40,7 +40,6 @@ export default function ReviewPage() {
         <form
           onSubmit={onSubmit(uploadSubmitListener, {
             validate,
-            onInvalid: invalidListener,
           })}
         >
           <section>

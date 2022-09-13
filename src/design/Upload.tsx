@@ -39,7 +39,7 @@ export default function Upload({ multiple, name, accept }: IProp) {
           } else {
             if (uploadWrapperRef.current) {
               const prevInput = uploadWrapperRef.current.querySelector("input[type=file]") as HTMLInputElement;
-              prevInput.remove();
+              prevInput?.remove();
               uploadWrapperRef.current.appendChild(input);
 
               setFileDescription((prev) => {

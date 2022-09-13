@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { useRef } from "react";
 
 interface IProp {
   videoUrl: string;
@@ -6,9 +7,27 @@ interface IProp {
 }
 
 export default function ReviewPlayer({ videoUrl, vttUrl }: IProp) {
+  const ref = useRef<HTMLVideoElement>(null);
   return (
     <section css={wrapper}>
-      <video css={videoStyle} src={videoUrl} controls>
+      <video
+        ref={ref}
+        css={videoStyle}
+        src={videoUrl}
+        controls
+        onLoadedMetadata={(e) => {
+          if (e.currentTarget.duration === Infinity) {
+            e.currentTarget.currentTime = 1e101;
+
+            e.currentTarget.ontimeupdate = function () {
+              this.ontimeupdate = () => {
+                return;
+              };
+              if (ref.current) ref.current.currentTime = 0;
+            };
+          }
+        }}
+      >
         {vttUrl && <track default kind="captions" srcLang="ko" src={vttUrl}></track>}
       </video>
     </section>
