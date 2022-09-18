@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import * as datas from "../../../data";
 import { Position, Difficulty, DiffcultyKeys } from "../../../data/index.d";
+import { useHistory } from "../../../ioc/history";
 import { difficulty } from "../../../util/constant";
 
 const questions: Record<string, Position> = datas;
@@ -9,8 +9,8 @@ const questions: Record<string, Position> = datas;
 export default function useQuestion() {
   const [questionIndex, setQuestionIndex] = useState<number>();
   const [selectedQuestion, setSelectedQuestion] = useState<string[]>();
-  const [searchParams] = useSearchParams();
-  const position = searchParams.get("position");
+  const { getParam } = useHistory();
+  const position = getParam("position");
 
   const positionQuestion = useMemo(() => (position ? questions[position] : null), [position]);
 

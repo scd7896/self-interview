@@ -1,19 +1,19 @@
 import { css } from "@emotion/react";
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+
 import * as datas from "../../data/index";
 import { Select, Button } from "../../design";
 import colors from "../../design/color";
+import { Link, useHistory } from "../../ioc/history";
 
 export default function HomePage() {
-  const navigate = useNavigate();
+  const { push } = useHistory();
   const [position, setPosition] = useState<string>();
   const keys = Object.keys(datas);
 
   const onEnter = useCallback(() => {
-    navigate(`/interview?position=${position}`);
-  }, [navigate, position]);
+    push(`/interview?position=${position}`);
+  }, [push, position]);
 
   return (
     <div>

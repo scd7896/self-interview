@@ -2,9 +2,10 @@ import { css } from "@emotion/react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Button } from "../../design";
 import colors from "../../design/color";
+import { Link } from "../../ioc/history";
 import useQuestion from "./hooks/useQuestion";
 import useVideoInterview from "./hooks/useVideoInterview";
-import { Link } from "react-router-dom";
+
 import VTT from "./model/VTT";
 
 export default function InterviewPage() {
