@@ -24,6 +24,7 @@ export default function HomePage() {
             {key}
           </option>
         ))}
+        <option value="selfInterview">직접입력</option>
       </Select>
       {position && (
         <section css={enterButtonWrapper}>

@@ -18,7 +18,7 @@ export default function useQuestion() {
     const length = 3;
     const diffcultyKeys: DiffcultyKeys = Object.keys(diffcultyQuestions) as DiffcultyKeys;
 
-    const getRandomThreeIndex: (param: number) => number[] = (maxIndex: number) => {
+    const getRandomThreeIndex = (maxIndex: number) => {
       const questionIndexArr: number[] = [];
       function getRandomInt() {
         return Math.floor(Math.random() * maxIndex);

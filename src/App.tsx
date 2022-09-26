@@ -1,7 +1,7 @@
-import React from "react";
 import "./App.css";
 import Routers from "./Routers";
 import { Header, Body } from "./design/Layout";
+import Modal from "./design/modal/Modal";
 
 function App() {
   return (
@@ -11,6 +11,8 @@ function App() {
       </Header>
       <Body>
         <Routers />
+        <Modal />
+        <Modal />
       </Body>
     </>
   );
