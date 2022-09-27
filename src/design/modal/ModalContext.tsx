@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 type IReactComponent<P = any> = React.FC<P> | React.ComponentClass<P> | React.ClassicComponentClass<P>;
 
@@ -10,12 +10,19 @@ const defaultState: IModalContext = {
   modalList: [],
 };
 
+export interface IModalProps {
+  visible?: boolean;
+  onClose?: () => void;
+  children?: React.ReactChild | React.ReactChild[];
+  zIndex?: number;
+}
+
 export const ModalContext = createContext<IModalContext>(defaultState);
 
 const ModalProvider = ModalContext.Provider;
 
-export function withModalProvider<Props>(Component: IReactComponent<Props>) {
-  return function WithModalProviderFun(props: any) {
+export function withModalProvider(Component: IReactComponent<IModalProps>) {
+  return function WithModalProviderFun(props: IModalProps) {
     const [modalState, setModalState] = useState(defaultState);
 
     return (

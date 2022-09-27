@@ -11,8 +11,11 @@ function App() {
       </Header>
       <Body>
         <Routers />
-        <Modal />
-        <Modal />
+        <Modal visible>
+          {new Array(100).fill(1).map((it, index) => (
+            <h1 key={index}>test</h1>
+          ))}
+        </Modal>
       </Body>
     </>
   );
