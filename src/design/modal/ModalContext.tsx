@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 type IReactComponent<P = any> = React.FC<P> | React.ComponentClass<P> | React.ClassicComponentClass<P>;
 
@@ -23,7 +23,7 @@ const ModalProvider = ModalContext.Provider;
 
 export function withModalProvider(Component: IReactComponent<IModalProps>) {
   return function WithModalProviderFun(props: IModalProps) {
-    const [modalState, setModalState] = useState(defaultState);
+    const [modalState] = useState(defaultState);
 
     return (
       <ModalProvider value={modalState}>

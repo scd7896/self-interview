@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
 
 import Portal from "../../util/portal";
-import { IModalProps, withModalProvider } from "./ModalContext";
+import { IModalProps } from "./ModalContext";
 
-function Modal({ visible, children, zIndex, onClose }: IModalProps) {
+function Modal({ visible, children, onClose }: IModalProps) {
   return (
     <Portal>
       {visible && (
@@ -49,4 +49,4 @@ const modalContentsWrapper = css`
   background-color: white;
 `;
 
-export default withModalProvider(Modal);
+export default Modal;

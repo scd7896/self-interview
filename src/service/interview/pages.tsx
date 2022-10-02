@@ -2,7 +2,9 @@ import { css } from "@emotion/react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Button } from "../../design";
 import colors from "../../design/color";
+import Modal from "../../design/modal/Modal";
 import { Link } from "../../ioc/history";
+import SelfInputForm from "./components/SelfInputForm";
 import useQuestion from "./hooks/useQuestion";
 import useVideoInterview from "./hooks/useVideoInterview";
 
@@ -85,6 +87,9 @@ export default function InterviewPage() {
 
   return (
     <div css={wrapper}>
+      <Modal visible>
+        <SelfInputForm onSubmit={(e) => console.log(e)} />
+      </Modal>
       <section css={headerWrapper}>
         <Link to="/review">녹화영상 리뷰하러가기</Link>
         <Button size="default" color="primary" onClick={questionDownload}>

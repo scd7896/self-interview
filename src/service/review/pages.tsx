@@ -1,5 +1,5 @@
 import { Upload } from "../../design";
-import { IFailValidateReturnType, onSubmit } from "web-form-helper";
+import { onSubmit } from "web-form-helper";
 import useReview from "./hooks/useReview";
 import ReviewPlayer from "./components/ReviewPlayer";
 import { Button } from "../../design";
@@ -28,10 +28,6 @@ export default function ReviewPage() {
         message: "video를 반드시 입력해주세요",
       };
     return undefined;
-  }, []);
-
-  const invalidListener = useCallback((_: any, param?: IFailValidateReturnType) => {
-    alert(param ? param.name : "");
   }, []);
 
   return (

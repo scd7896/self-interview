@@ -101,7 +101,6 @@ export default function useQuestion() {
   }, [positionQuestion, getPositionQuestionCsvText]);
 
   return {
-    positionQuestion,
     randomPickQuestion,
     selectedQuestion,
     questionIndex,
