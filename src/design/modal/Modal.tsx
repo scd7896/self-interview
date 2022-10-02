@@ -1,17 +1,18 @@
 import { css } from "@emotion/react";
+
 import Portal from "../../util/portal";
 import { IModalProps, withModalProvider } from "./ModalContext";
-import useModal from "./useModal";
 
 function Modal({ visible, children, zIndex, onClose }: IModalProps) {
-  const { modalList } = useModal();
   return (
     <Portal>
       {visible && (
-        <div>
+        <div onClick={onClose}>
           <div css={modalMask}></div>
           <section css={modalWrapper}>
-            <div css={modalContentsWrapper}>{children}</div>
+            <div css={modalContentsWrapper} onClick={(e) => e.stopPropagation()}>
+              {children}
+            </div>
           </section>
         </div>
       )}
@@ -25,7 +26,7 @@ const modalMask = css`
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 999;
+  z-index: 1000;
   background-color: #00000073;
 `;
 

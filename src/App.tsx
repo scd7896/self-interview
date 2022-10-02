@@ -1,7 +1,6 @@
 import "./App.css";
 import Routers from "./Routers";
 import { Header, Body } from "./design/Layout";
-import Modal from "./design/modal/Modal";
 
 function App() {
   return (
@@ -11,11 +10,6 @@ function App() {
       </Header>
       <Body>
         <Routers />
-        <Modal visible>
-          {new Array(100).fill(1).map((it, index) => (
-            <h1 key={index}>test</h1>
-          ))}
-        </Modal>
       </Body>
     </>
   );
