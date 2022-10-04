@@ -16,9 +16,7 @@ export default function Input(args: PropTypes) {
   return (
     <section css={wrapper}>
       {args.label && <label css={label}>{args.label}</label>}
-      <section>
-        <input css={inputStyle} {...args} />
-      </section>
+      <input css={inputStyle} {...args} />
       {args.description && <section css={description}>{args.description}</section>}
     </section>
   );
@@ -33,6 +31,17 @@ const inputStyle = css`
   border: 1px solid ${colors.netural[200]};
   padding: 10px 16px;
   box-sizing: border-box;
+  color: ${colors.netural[800]};
+  border-radius: 4px;
+  font-size: 14px;
+
+  &:focus {
+    outline: 2px solid ${colors.primary[600]};
+  }
+
+  &::placeholder {
+    color: ${colors.netural[500]};
+  }
 `;
 
 const description = css`
