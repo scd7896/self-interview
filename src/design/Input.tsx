@@ -24,6 +24,10 @@ export default function Input(args: PropTypes) {
 
 const wrapper = css`
   box-sizing: border-box;
+
+  & + & {
+    margin-top: 8px;
+  }
 `;
 
 const inputStyle = css`
@@ -48,11 +52,14 @@ const description = css`
   color: ${colors.netural[600]};
   font-size: 12px;
   line-height: 16px;
+  margin-top: 4px;
 `;
 
 const label = css`
+  display: block;
   color: ${colors.netural[800]};
   font-size: 12px;
   line-height: 16px;
   font-weight: 700;
+  margin-bottom: 4px;
 `;

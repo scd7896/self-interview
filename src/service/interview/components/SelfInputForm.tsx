@@ -2,6 +2,7 @@ import { useState } from "react";
 import { onSubmit as submitHelper } from "web-form-helper";
 import { Button, Input } from "../../../design";
 import { v4 as uuidV4 } from "uuid";
+import { css } from "@emotion/react";
 
 interface IProp {
   defaultValue?: Array<string>;
@@ -13,6 +14,7 @@ export default function SelfInputForm({ defaultValue, onSubmit }: IProp) {
 
   return (
     <form
+      css={form}
       onSubmit={submitHelper((arg: any) => onSubmit?.(arg))}
       onKeyDown={(e) => {
         if (e.key === "Enter") e.preventDefault();
@@ -24,8 +26,9 @@ export default function SelfInputForm({ defaultValue, onSubmit }: IProp) {
             description="입력해주세요"
             label={`${index + 1}번째 질문`}
             key={it.key}
-            name={`question.${index}`}
+            name={`questions.${index}`}
             defaultValue={it.value}
+            placeholder="입력해주십쇼"
           />
         ))}
       </section>
@@ -55,3 +58,7 @@ export default function SelfInputForm({ defaultValue, onSubmit }: IProp) {
     </form>
   );
 }
+
+const form = css`
+  padding: 16px;
+`;

@@ -107,5 +107,6 @@ export default function useQuestion() {
     setQuestionIndex,
     resetQuestion,
     questionDownload,
+    setSelectedQuestion,
   };
 }

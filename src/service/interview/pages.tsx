@@ -1,9 +1,10 @@
 import { css } from "@emotion/react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../design";
 import colors from "../../design/color";
 import Modal from "../../design/modal/Modal";
-import { Link } from "../../ioc/history";
+import { Link, useHistory } from "../../ioc/history";
+import { positionValue } from "../../util/constant";
 import SelfInputForm from "./components/SelfInputForm";
 import useQuestion from "./hooks/useQuestion";
 import useVideoInterview from "./hooks/useVideoInterview";
@@ -14,11 +15,22 @@ export default function InterviewPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const VTTInstance = useMemo(() => new VTT(), []);
+  const { getParam } = useHistory();
+  const position = getParam("position");
+  const [modalVisible, setModalVisible] = useState(position === positionValue.SELF_INTERVIEW);
 
   const { initialVideoStream, videoStream, recodingVideo, recording, stopVideoStream, getTimeElapsed } =
     useVideoInterview();
-  const { randomPickQuestion, setQuestionIndex, questionIndex, selectedQuestion, resetQuestion, questionDownload } =
-    useQuestion();
+
+  const {
+    randomPickQuestion,
+    setQuestionIndex,
+    questionIndex,
+    selectedQuestion,
+    resetQuestion,
+    questionDownload,
+    setSelectedQuestion,
+  } = useQuestion();
 
   const onNextButtonClick = useCallback(() => {
     const diffString = getTimeElapsed();
@@ -85,10 +97,19 @@ export default function InterviewPage() {
     }
   }, [videoStream]);
 
+  const selfInterviewInputSubmitListener = useCallback(
+    (questions: string[]) => {
+      console.log(questions);
+      setSelectedQuestion(questions);
+      setModalVisible(false);
+    },
+    [setSelectedQuestion],
+  );
+
   return (
     <div css={wrapper}>
-      <Modal visible>
-        <SelfInputForm onSubmit={(e) => console.log(e)} />
+      <Modal visible={modalVisible}>
+        <SelfInputForm onSubmit={({ questions }) => selfInterviewInputSubmitListener(questions || [])} />
       </Modal>
       <section css={headerWrapper}>
         <Link to="/review">녹화영상 리뷰하러가기</Link>

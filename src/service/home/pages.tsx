@@ -5,6 +5,7 @@ import * as datas from "../../data/index";
 import { Select, Button } from "../../design";
 import colors from "../../design/color";
 import { Link, useHistory } from "../../ioc/history";
+import { positionValue } from "../../util/constant";
 
 export default function HomePage() {
   const { push } = useHistory();
@@ -24,7 +25,7 @@ export default function HomePage() {
             {key}
           </option>
         ))}
-        <option value="selfInterview">직접입력</option>
+        <option value={positionValue.SELF_INTERVIEW}>직접입력</option>
       </Select>
       {position && (
         <section css={enterButtonWrapper}>
