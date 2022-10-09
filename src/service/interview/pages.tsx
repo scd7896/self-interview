@@ -19,8 +19,7 @@ export default function InterviewPage() {
   const position = getParam("position");
   const [modalVisible, setModalVisible] = useState(position === positionValue.SELF_INTERVIEW);
 
-  const { initialVideoStream, videoStream, recodingVideo, recording, stopVideoStream, getTimeElapsed } =
-    useVideoInterview();
+  const { initialVideoStream, videoStream, recording, stopVideoStream, getTimeElapsed } = useVideoInterview();
 
   const {
     randomPickQuestion,
@@ -76,8 +75,7 @@ export default function InterviewPage() {
 
   const questionPickAndRecordingStart = useCallback(() => {
     randomPickQuestion();
-    recodingVideo();
-  }, [randomPickQuestion, recodingVideo]);
+  }, [randomPickQuestion]);
 
   const isInterviewEnd = useMemo(() => {
     return selectedQuestion && questionIndex === selectedQuestion.length;

@@ -10,7 +10,9 @@ interface IProp {
 }
 
 export default function SelfInputForm({ defaultValue, onSubmit }: IProp) {
-  const [questions, setQuestions] = useState(defaultValue?.map((it) => ({ key: uuidV4(), value: it })));
+  const [questions, setQuestions] = useState(
+    defaultValue?.map((it) => ({ key: uuidV4(), value: it })) || [{ key: uuidV4(), value: "" }],
+  );
 
   return (
     <form
@@ -32,22 +34,24 @@ export default function SelfInputForm({ defaultValue, onSubmit }: IProp) {
           />
         ))}
       </section>
-      <Button
-        type="button"
-        color="primary"
-        size="large"
-        onClick={() => {
-          setQuestions((prev) => {
-            if (prev) {
-              return [...prev, { key: uuidV4(), value: "" }];
-            }
-            return [{ key: uuidV4(), value: "" }];
-          });
-        }}
-      >
-        추가
-      </Button>
-      <footer>
+      <section css={addWrapper}>
+        <Button
+          type="button"
+          color="secondary"
+          size="large"
+          onClick={() => {
+            setQuestions((prev) => {
+              if (prev) {
+                return [...prev, { key: uuidV4(), value: "" }];
+              }
+              return [{ key: uuidV4(), value: "" }];
+            });
+          }}
+        >
+          추가
+        </Button>
+      </section>
+      <footer css={footer}>
         <Button type="submit" color="primary" size="large">
           확인
         </Button>
@@ -61,4 +65,16 @@ export default function SelfInputForm({ defaultValue, onSubmit }: IProp) {
 
 const form = css`
   padding: 16px;
+`;
+
+const footer = css`
+  text-align: right;
+
+  button + button {
+    margin-left: 8px;
+  }
+`;
+
+const addWrapper = css`
+  margin-top: 12px;
 `;

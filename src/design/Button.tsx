@@ -46,15 +46,30 @@ const dangerColor = css`
   }
 `;
 
+const secondaryColor = css`
+  background-color: ${color.primary[100]};
+  border: 1px solid ${color.primary[200]};
+  color: ${color.primary[600]};
+  &:hover {
+    background-color: ${color.netural[0]};
+  }
+
+  &:active {
+    background-color: ${color.netural[0]};
+    border: 1px solid ${color.primary[700]};
+  }
+`;
+
 const buttonColors = {
   primary: primaryColor,
   default: defaultColor,
   danger: dangerColor,
+  secondary: secondaryColor,
 };
 
 interface IProp extends React.ButtonHTMLAttributes<any> {
   size: "default" | "large" | "small";
-  color: "primary" | "danger" | "default";
+  color: "primary" | "danger" | "default" | "secondary";
   children: any;
 }
 
